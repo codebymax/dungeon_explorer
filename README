@@ -1,0 +1,36 @@
+This program generates a dungeon in a 21 by 80 area. The program generates a dungeon with rooms "." connected with corridors "#" and places a pc "@" and some monsters denoted with numbers and letters around the dungeon. 
+
+There are a couple of tags that can be used when running the program. --load loads the most recent dungeon that has been saved. --save will gen a new dungeon and save it. --nummon followed by an integer denotes how many monsters to be placed in the dungeon. The default value is 10
+
+Characters speed determines how often they can move. You always have a speed of 10. The monsters can have speed anywhere from 5 - 20. If a certain monster has high speed it might get to move twice as often as the pc. 
+
+Monsters can have a couple of abilities. First, monsters can be tunneling and move through rock leaving corridors in their wake. Also monsters can be telepathic and always know where the player is and make a beeline toward the palyer. These monsters absolutely wreck the randomly moving pc currently. Lastly, monsters can be erratic which means every time the monster moves there is a 50 percent chance that move will be random.
+
+Can control pc using pre set controls. y, k, u, l, n, j, b, h to move around. > and < to use stairs m to bring up monster list. up and down arrows to traverse monster list. escape to leave list and Q to quit
+
+The pc can only see a 5x5 area around them in the dungeon. However, as the pc moves they can remember what terrain they have already traversed in the dungeon. But this is not always accurate because monsters can change the dungeon after the pc moves away from the area. Monsters are only shown if they are in the area the pc can currently see. If the pc moves away from a monster the monster will disapear into the dungeon mist. The fog of war effect can be toggled on an off with the f key.
+
+Additionally, the pc can be teleported around using the t key. First press the t key to enter teleport mode. Then a marker '*' appears and can be moved around using the same keys as the pc normally. Once the marker is in the desired position press t again to teleport the pc to the marker.
+
+Monster and object lists are parsed. Then used to generate the monsters and objects
+
+Pickup objects by walking over them. Open the item menu with i to equip items.
+
+1.1 additions:
+
+There is one store per floor of the dugneon. The store room is the one with a green square roughly in the middle of it. 
+Monsters cannot enter shops and thus, shops are a safe space for the player especially against the scary telepathic monsters. 
+Sell items by standing in the green square and destroying items in your inventory or equipped items. In this dungeon the wanderers are 
+paid to destroy priceless dungeon artifacts I guess. On each corner of the green box there is an item for sale. Buy
+the item by trying to move on top of it and you will be prompted with the item name and a price. 
+
+New monster ability SPLIT
+Added a new monster type where the monster splits into two weaker subsets of the original monster. Upon death a monster
+with this trait will look for a monster in the monster descriptions that has the lowercase version of its symbol and the
+same primary color. These new monsters will be placed in open spots around the dying monster. For example, a monster with
+the symbol K and color GREEN will need there to be monster with symbol k and color GREEN to work correctly. If this 
+condition is not met two random monsters will be spawned out of the dying monster. I have left a version of monster_desc.txt 
+in the folder with this example monster.
+
+
+

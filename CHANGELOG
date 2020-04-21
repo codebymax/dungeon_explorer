@@ -1,0 +1,100 @@
+1/25/19 - Began work on the dungeonGenerator.c file.
+	  Randomly generate a room and output the room to the console.
+1/27/19 - Transitioned room generation to a seperate function that places rooms using a 10 x 4 array.
+	  Added print_dungeon function to print out the current dungeon array.
+	  Added initialize_are function to add border around play area.
+	  At this point program successfuly builds the play area and generates rooms in the area but does not connect them.
+1/28/19 - Began work on corridor generation.
+	  Tried to implement simple square corridors between rooms.
+	  Program did compile but would output segmentation fault when run the majority of the time.
+1/29/19 - Discovered that the corridors function had the x and y switched for editing the area array causing it to attempt to write out of bounds almost every time.
+	  I switched x and y's position and corridor generation was successful.
+	  Possibly going to try to make the corridors more intersting in the future.
+
+2/5/19 - combined stair generation with player character generation for now.
+	 Added new method of generating corridors to make them more interesting in some cases.
+
+2/7/19 - Adadpted the print_area function to generate. This is going to be the main method that does all of the randomization and placement when not loading  a pregenerated map.
+	 Added hardness array, stairs array, pc, load and save variables to the main. These will hold all of the information to print the dungeon.
+	 Ajusted all the functions to write into the hardness array.
+
+2/8/19 - removed play_area. This will streamline the generation and loading process.
+	 created the print_hardness function to print the dungeon based off hardness array and other location data
+	 Added save and load functionality.
+	 Strange error with load causes lower half of dungeon to get all messed up with rock in the middle of rooms for no reason. Not sure what causes this.
+
+2/9/19 - Fixed lower half of dungeon by casting all loaded hardness values to uint8_t. Not sure why this worked but it worked.
+
+2/15/19 - Added tunneling dungeon map. Pretty sure this works
+	  Started on the non-tunneling. Not sure if its to spec all I really do is set the cost to -1 where there is rock. Then just don't print out any -1s.
+
+2/19/19 - Fixed non-tunneling map. It was still adding all the cells into the heap but I added a catch where a cell is only added to the heap if hardness is 0 in that spot
+	  Changed output to put X around border and unreachable cells in the non-tunneling map
+	  Changed printing to place @ where the PC is instead of 0
+
+2/20/19 - tested with test dungeons and irregular dungeons
+
+2/24/19 - began working on implementation of monsters created character_t struct and characters array of structs.
+
+2/25/19 - generated monster and pc character instances into the dungeon and printed them. npcs hold a random number from 0 to 15
+	  began implementation of priority queue and created the turn_cmp function to pick out the character to go next.
+
+2/26/19 - lots of changes to gen_monsters function.
+	  Changed the characters array to an array of pointers, this makes moving characters much easier.
+	  Developed a couple movement functions, random_move, random_move_t, move_to_pc.
+	  created cpy_delete_char_t to do the heavy lifting of moving a character to a new space
+	  having a problem where the program tries to divide by zero randomly shortly into the game not sure what could be causing this
+2/27/19 - added check_win to see if pc is the only thing left in dungeon\
+	  added see_pc to change monster behavior when they are in the same room as the pc
+	  overhauled movement and characters array again to fix divide by zero problem. Changed to initializing the array to all null and changed the way characters are moved.
+	  changed rock hardness to be a random number from 1 to 254 instead of always being 250.
+
+3/14/19 - Did everything including rebuilding my slackware vm. BAD IDEA
+	  Added ncurses and converted print hardness to use it
+	  Modified the turn system to take user input and build function to move pc based on a desired move.
+	  Built list_monster function using ncurses and a list of all the monsters
+	  Moved the main game loop out of gen_characters to its own run-game function
+	  Added functionality for working stairs and functions to detect when player is on stairs.
+
+3/24/19 - Began tranfering code to C++. worked on headers and importing all the right modules
+
+3/26/19 - More transferring to C++ got code to compile in C++ then created classes for Character, Room, and dungeon_path
+
+3/27/19 - Ported all current code to use classes instead of structs. Began work on fog of war. Added fog_map to show what the pc has or can currently see.
+	  Built init_fog function to generate fog_map with all emptyness except for a 5x5 box around the pc.
+	  Added basic_map. This map shows what would be printed to console with no fog of war. Helps with uncoving things as pc explores.
+	  Added update_map function to update the basic map everytime pc moves.
+	  Added update_fog function to update the fog map as pc moves around.
+	  Modified print_hardness function to be called print_d and simply print any char map you give it. Better for toggling fog and also teleport mode
+	  Moved onto teleportation. Added teleport_mode function to drive teleportation.
+	  Problem where fog_map remembers where monsters are which results in a remembered monster showing up in a different spot and seeming like two different monsters.
+	  To fix this I added a terrain map (t_map) to just show the base terrain of the dungeon. I then used this map to erase monsters when they pass out of the pc's field of view.
+
+3/31/19 - Added color to dungeon and moved dungeon down one line.
+
+4/1/19  - Stole win/lose/quit screens from piazza. Began work on parsing monster definitions.
+
+4/2/19  - setup parse_mosnters function and built file_path. Played around with ifstream methods to parse file.
+
+4/3/19  - expanded parse_monsters to open file and read monsters. I used getline for all of the file input then a lot of substrings and some find() to pick out bits from certain lines. Once parsing was successful in printing out all the monsters I worked on getting inheritance with NPC and PC to work right. Adapted gen_characters and run_game to use NPC and PC objects. Had to use a lot of casting. I feel like there is a better way to do this but it is what it is.
+
+4/9/19  - converted NPC to NPC_desc and created Obj and Obj_desc classes. Incorperated object list parsing. Changed parsers to send data into a vector of NPC_desc or Obj_desc.
+
+4/10/19 - added NPC color functionality and items. Now NPC's roam the dungeon in their respective colors and objects lay on the floor. 
+
+4/16/19 - added vectors for equipped items and an inventory to the PC object. The player can now pickup items on the floor just by waking over them
+	  added button functionality to show equipped items and inventory.
+
+4/17/19 - Added ability to equip items. Now the player's stats are calculated with equipped items taken into account.
+	  changed combat to not insta-kill. Show damage messages at the top of the console.
+	  Now when the boss dies the game ends. 
+	  
+4/21/19 - Revamped monster "AI" I hadn't implemeted the new abilities that were added a couple weeks ago like pass. 
+          Those are now implemented and also the system of deciding where a monster will move has been changed slightly to make it simpler
+          Fixed bug where color for monsters that can't currently be seen shoes up revealing where they are.
+          
+4/28/19 - Added shops to dungeon generation. Added buy and sell functionality and started keeping track of the PCs coins.
+	  Added new monster trait SPLIT.
+	  Fixed bug where shops would not spawn once going down or up stairs
+	  Fixed bug where split monster kills itself in the wall
+	  
